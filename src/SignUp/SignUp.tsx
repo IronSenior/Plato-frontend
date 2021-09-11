@@ -14,7 +14,6 @@ export default function SignUp() {
   const onSignUp = useCallback(
     async (userData: UserFormData) => {
       const body = { user: { userId: uuid.v4(), ...userData } };
-      console.log(body);
       await axios.post(`${REACT_APP_PLATO_API_URL}/user/create/`, body);
       history.push("/");
     },
