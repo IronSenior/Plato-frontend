@@ -1,8 +1,11 @@
 import React from 'react';
 
 export default function Home() {
+
   return (
-    <span>Hola Mundo</span>
+    <div>
+      <span>Hola Mundo</span><br/>
+    </div>
   );
 }
 

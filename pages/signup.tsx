@@ -1,23 +1,19 @@
 import axios from "axios";
 import React, { useCallback } from "react";
-import { useHistory } from "react-router-dom";
 import * as uuid from "uuid";
 
-import { UserFormData, SignUpForm } from "./components/SignUpForm";
+import { UserFormData, SignUpForm } from "../Components/SignUp/SignUpForm";
 
 
 export default function SignUp() {
-  const history = useHistory();
-
-  const { REACT_APP_PLATO_API_URL } = process.env;
+  const { NEXT_PUBLIC_PLATO_API_URL } = process.env;
 
   const onSignUp = useCallback(
     async (userData: UserFormData) => {
       const body = { user: { userId: uuid.v4(), ...userData } };
-      await axios.post(`${REACT_APP_PLATO_API_URL}/user/create/`, body);
-      history.push("/");
+      await axios.post(`${NEXT_PUBLIC_PLATO_API_URL}/user/create/`, body);
     },
-    [history]
+    []
   );
 
   return <SignUpForm onSubmitForm={onSignUp} />;

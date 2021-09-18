@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { UserDTO } from "../../models/userDTO";
+import UserDTO from "../../Models/userDTO";
 
 export type UserFormData = {
     username: string;
@@ -19,7 +19,7 @@ export const SignUpForm: React.FunctionComponent<Props> = ({ onSubmitForm, user 
   useEffect(() => {
     if (user) {
       setValue("username", user.username);
-      setValue("usermail", user.email);
+      setValue("usermail", user.usermail);
       setValue("password", user.password);
     }
   }, [user]);
