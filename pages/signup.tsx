@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useCallback } from "react";
 import * as uuid from "uuid";
 
-import { UserFormData, SignUpForm } from "../Components/SignUp/SignUpForm";
+import { UserFormData, SignUpForm } from "../components/SignUp/SignUpForm";
 
 
 export default function SignUp() {

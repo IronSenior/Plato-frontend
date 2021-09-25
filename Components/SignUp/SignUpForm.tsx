@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import UserDTO from "../../Models/userDTO";
+import UserDTO from "../../models/userDTO";
 
 export type UserFormData = {
     username: string;
