@@ -9,25 +9,25 @@ export default function Brands() {
 
     const { NEXT_PUBLIC_PLATO_API_URL } = process.env;
     const [ brands, setBrands ] = useState([]);
-    const [ session, test ] = useSession();
+    const [ session, loading ] = useSession();
     const router = useRouter();
     const { brandId } = router.query;
 
     useEffect(
         () => {
-            axios.get(
-                `${NEXT_PUBLIC_PLATO_API_URL}/brand/user/${session!.userId}/`,
-                {headers: {"Authorization" : `Bearer ${session!.access_token}`}}
-            ).then(
-                (response) => {
-                    setBrands(response.data);
-                }
-            )
+            if (session) {
+                axios.get(
+                    `${NEXT_PUBLIC_PLATO_API_URL}/brand/user/${session.userId}/`,
+                    {headers: {"Authorization" : `Bearer ${session.access_token}`}}
+                ).then(
+                    (response) => {
+                        setBrands(response.data);
+                    }
+                )
+            }
         },
-        []
-    )   
-    
-    console.log(brands);
+        [session]
+    )
 
     return (
         <div>
