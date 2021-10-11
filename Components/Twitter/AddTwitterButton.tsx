@@ -28,7 +28,7 @@ export const AddTwitterButton: React.FunctionComponent = () => {
                 )
             }
         },
-        [session]
+        [loading]
     )
     
     useEffect(
@@ -37,7 +37,7 @@ export const AddTwitterButton: React.FunctionComponent = () => {
                 getAuthUrl();
             }
         },
-        [session]
+        [loading]
     )
 
   return (

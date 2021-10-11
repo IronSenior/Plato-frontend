@@ -34,14 +34,13 @@ export default function Accounts() {
         },
         [session]
     )
-    
-    console.log(twitterAccount);
+
 
     return (
         <div>
             {twitterAccount ? (
-                <Link href={`/brand/${brandId}/schedule`}>
-                    <a>Sign up</a>
+                <Link href={`/brand/${brandId}/schedule/?accountId=${twitterAccount.accountId}`}>
+                    <a>Programar Tweet</a>
                 </Link>
             ) : (
                 <AddTwitterButton/>
