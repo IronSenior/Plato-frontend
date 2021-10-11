@@ -35,7 +35,6 @@ export default function Accounts() {
         [session]
     )
 
-
     return (
         <div>
             {twitterAccount ? (

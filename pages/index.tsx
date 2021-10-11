@@ -7,8 +7,11 @@ import {
   Box,
   Heading
 } from '@chakra-ui/react';
+import { signOut, useSession } from 'next-auth/client';
 
 export default function Home() {
+
+  const [session, loading] = useSession() 
 
   return (
     <Center pt="100">
@@ -29,6 +32,23 @@ export default function Home() {
               Plato: Controla tus redes
             </Heading>
           </Box>
+          {session ? (
+            <Center pt="5">
+              <Link href="/brand">
+                <Button colorScheme="teal" mr="4">
+                  Marcas
+                </Button>
+              </Link>
+              <Link href="/brand/create">
+                <Button colorScheme="teal" mr="4">
+                  Crear Marca
+                </Button>
+              </Link>
+              <Button colorScheme="teal" onClick={() => signOut()}>
+                Cerrar Sesión
+              </Button>
+            </Center>
+          ) : (
             <Center pt="5">
               <Link href="/signup">
                 <Button colorScheme="teal" mr="4">
@@ -41,6 +61,8 @@ export default function Home() {
                 </Button>
               </Link>
             </Center>
+          )}
+
         </Box>
       </Box>
     </Center>
