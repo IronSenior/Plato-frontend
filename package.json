@@ -17,8 +17,10 @@
     "next": "11.1.2",
     "next-auth": "^3.29.0",
     "react": "17.0.2",
+    "react-datetime-picker": "^3.4.2",
     "react-dom": "17.0.2",
     "react-hook-form": "^7.15.3",
+    "react-social-login-buttons": "^3.6.0",
     "swr": "^1.0.1",
     "uuid": "^8.3.2"
   },
@@ -27,6 +29,7 @@
     "@types/jsonwebtoken": "^8.5.5",
     "@types/next-auth": "^3.15.0",
     "@types/react": "17.0.21",
+    "@types/react-datepicker": "^4.1.7",
     "@types/uuid": "^8.3.1",
     "eslint": "7.32.0",
     "eslint-config-next": "11.1.2",

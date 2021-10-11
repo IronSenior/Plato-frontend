@@ -5,6 +5,8 @@ import { useForm } from "react-hook-form";
 import UserDTO from "../../models/userDTO";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { TwitterLoginButton } from "react-social-login-buttons";
+import { Button } from "@chakra-ui/button";
 
 
 export const AddTwitterButton: React.FunctionComponent = () => {
@@ -41,6 +43,10 @@ export const AddTwitterButton: React.FunctionComponent = () => {
     )
 
   return (
-    <a href={authUrl}>Add Twitter</a>
+        <a href={authUrl}>
+            <TwitterLoginButton>
+                <span>Añadir Twitter</span>
+            </TwitterLoginButton>
+        </a>
   );
 };

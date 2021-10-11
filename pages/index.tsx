@@ -17,7 +17,7 @@ export default function Home() {
     <Center pt="100">
       <Box maxW="sm" overflow="hidden">
         <Center pt="50">
-          <Image src="/logo.png" alt="Plato logo" />
+          <Image src="/logo.png" alt="Plato logo"/>
         </Center>
         <Box p="6">
           <Box

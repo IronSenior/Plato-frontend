@@ -1,5 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { 
+    Image,
+    Center,
+    Button,
+    Box,
+    Heading,
+    InputGroup,
+    Input,
+    Textarea,
+    InputLeftElement,
+    InputRightElement
+  } from '@chakra-ui/react';
 
 export type ScheduleFormData = {
     description: string,
@@ -14,21 +26,64 @@ type Props = {
 export const ScheduleForm: React.FunctionComponent<Props> = ({ onSubmitForm }) => {
     const { handleSubmit, register, setValue } = useForm<ScheduleFormData>();
 
+    const handleDescriptionChange = (event) => setValue("description", event.target.value)
+    const handleDateChange = (event) => setValue("publicationDate", event.target.value)
+    const handleTimeChange = (event) => setValue("publicationTime", event.target.value)
+
+    useEffect(() => {
+        register("description", { required: true });
+        register("publicationDate", { required: true });
+        register("publicationTime", { required: true });
+    }, []);
+
     return (
-        <form onSubmit={handleSubmit((publicationData) => onSubmitForm(publicationData))}>
-            <label>
-                Descripción{" "}
-                <input {...register("description", { required: true })} type="text" />
-            </label>
-            <label>
-                Fecha{" "}
-                <input {...register("publicationDate", { required: true })} type="date" />
-            </label>
-            <label>
-                Hora{" "}
-                <input {...register("publicationTime", { required: true })} type="time" />
-            </label>
-            <input type="submit" value="Programar" />
-        </form>
+        <Center pt="100">
+        <Box maxW="sm" overflow="hidden">
+          <Center pt="50">
+            <Image src="/logo.png" alt="Plato logo" />
+          </Center>
+          <Box p="6">
+            <Box
+              mt="1"
+              fontWeight="semibold"
+              as="h4"
+              lineHeight="tight"
+              isTruncated
+              textAlign="center"
+            >
+              <Heading size="md">
+                Programar publicación
+              </Heading>
+            </Box>
+            <Center mt="5">
+              <form onSubmit={handleSubmit((contactData) => onSubmitForm(contactData))}>
+                <Textarea
+                  type="text"
+                  placeholder="¿Qué está pasando?"
+                  required={true}
+                  onChange={handleDescriptionChange}
+                />
+                <Input
+                  mt="5"
+                  type="date"
+                  placeholder="Fecha"
+                  required={true}
+                  onChange={handleDateChange}
+                />
+                <Input
+                  mt="5"
+                  type="time"
+                  placeholder="Hora"
+                  required={true}
+                  onChange={handleTimeChange}
+                />
+                <Center mt="3">
+                  <Button type="submit">Crear</Button>
+                </Center>
+              </form>
+            </Center>
+          </Box>
+        </Box>
+      </Center>
     );
 };
