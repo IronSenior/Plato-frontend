@@ -61,7 +61,7 @@ export const SignUpForm: React.FunctionComponent<Props> = ({ onSubmitForm, user 
             textAlign="center"
           >
             <Heading size="md">
-              Iniciar Sesión
+              Crear Usuario
             </Heading>
           </Box>
           <Center mt="5">
