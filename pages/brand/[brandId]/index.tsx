@@ -8,6 +8,7 @@ import {
     Image,
     Center,
     Button,
+    Spinner,
     VStack,
     Tabs,
     Tab,
@@ -17,7 +18,8 @@ import {
     Container,
     Box,
     Heading
-  } from '@chakra-ui/react';
+} from '@chakra-ui/react';
+import { TweetsList } from "../../../components/Twitter/TweetsList";
 
 
 export default function Accounts() {
@@ -36,7 +38,6 @@ export default function Accounts() {
                     {headers: {"Authorization" : `Bearer ${session!.access_token}`}}
                 ).then(
                     (response) => {
-                        console.log(response);
                         setTwitterAccount(response.data.account);
                     }
                 ).catch(
@@ -48,6 +49,10 @@ export default function Accounts() {
         },
         [session]
     )
+
+    if (loading) {
+        return (<Spinner />)
+    }
 
     return (
         <VStack pt="">
@@ -82,11 +87,14 @@ export default function Accounts() {
             <TabPanels>
                 <TabPanel>
                     {twitterAccount ? (
-                        <Link href={`/brand/${brandId}/schedule/?accountId=${twitterAccount.accountId}`}>
-                            <Button>
-                                Programar Tweet
-                            </Button>
-                        </Link>
+                        <Box ml="10" mt="5">
+                            <Link href={`/brand/${brandId}/schedule/?accountId=${twitterAccount.accountId}`}>
+                                <Button mb="4">
+                                    Programar Tweet
+                                </Button>
+                            </Link>
+                            <TweetsList accountId={twitterAccount.accountId}></TweetsList>
+                        </Box>
                     ) : (
                         <AddTwitterButton/>
                     )}

@@ -5,13 +5,14 @@ import {
   Center,
   Button,
   Box,
+  Spinner,
   Heading
 } from '@chakra-ui/react';
 import { signOut, useSession } from 'next-auth/client';
 
 export default function Home() {
 
-  const [session, loading] = useSession() 
+  const [session, loading] = useSession();
 
   return (
     <Center pt="100">
