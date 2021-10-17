@@ -9,7 +9,7 @@ import { ScheduleFormData, ScheduleForm } from "../../../components/Brand/schedu
 
 function parseDate(date: string, time: string) {
     const dateTime = Date.parse(`${date} ${time}`);
-    return dateTime/1000;
+    return dateTime;
 }
 
 

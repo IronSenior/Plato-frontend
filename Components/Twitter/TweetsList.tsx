@@ -7,8 +7,18 @@ import {
     ListItem,
     Spinner,
     ListIcon,
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalCloseButton,
+    ModalBody,
+    ModalFooter,
+    Button,
+    useDisclosure
 } from '@chakra-ui/react';
 import { CheckCircleIcon, CalendarIcon } from "@chakra-ui/icons";
+import { TweetReport } from "./TweetReport";
 
 
 type Props = {
@@ -21,6 +31,7 @@ export const TweetsList: React.FunctionComponent<Props> = ({ accountId }) => {
     const [ tweets, setTweets ] = useState([""]);
     const [ session, loading ] = useSession();
     const router = useRouter();
+    const { isOpen, onOpen, onClose } = useDisclosure();
 
     useEffect(
         () => {
@@ -42,8 +53,6 @@ export const TweetsList: React.FunctionComponent<Props> = ({ accountId }) => {
         [session]
     )
 
-    console.log(tweets);
-
     if (loading) {
         return (<Spinner />);
     }
@@ -51,10 +60,27 @@ export const TweetsList: React.FunctionComponent<Props> = ({ accountId }) => {
     return (
         <List spacing={3}>
             {tweets.map((tweet, index) => (  
-            <ListItem>
-                <ListIcon as={tweet.published ? CheckCircleIcon : CalendarIcon}/>
-                { tweet.description }
-            </ListItem>
+                <>
+                <ListItem>
+                    <ListIcon as={tweet.published ? CheckCircleIcon : CalendarIcon}/>
+                    <Button onClick={onOpen}>{ tweet.description }</Button>
+                </ListItem>
+                <Modal isOpen={isOpen} onClose={onClose} size="4xl">
+                    <ModalOverlay/>
+                    <ModalContent height={{xl: "500px"}} p="10">
+                        <ModalHeader>Reporte de Tweet</ModalHeader>
+                        <ModalCloseButton />
+                        <ModalBody>
+                            <TweetReport tweetId={tweet.tweetId}/>
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button colorScheme="blue" mr={3} onClick={onClose}>
+                                Cerrar
+                            </Button>
+                        </ModalFooter>
+                    </ModalContent>
+                </Modal>
+                </>
             ))}
         </List>
     );

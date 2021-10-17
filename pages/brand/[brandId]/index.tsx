@@ -17,9 +17,11 @@ import {
     TabPanel,
     Container,
     Box,
-    Heading
+    Heading,
 } from '@chakra-ui/react';
+
 import { TweetsList } from "../../../components/Twitter/TweetsList";
+import { TweetReport } from "../../../components/Twitter/TweetReport";
 
 
 export default function Accounts() {
@@ -29,6 +31,7 @@ export default function Accounts() {
     const [ session, loading ] = useSession();
     const router = useRouter();
     const { brandId } = router.query;
+    
 
     useEffect(
         () => {
