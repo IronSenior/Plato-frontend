@@ -1,7 +1,6 @@
 import { Spinner } from "@chakra-ui/react";
 import axios from "axios";
 import { useSession } from "next-auth/client";
-import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useState } from "react";
 import { AxisOptions, Chart } from "react-charts";
 
@@ -25,13 +24,12 @@ export const TweetReport: React.FunctionComponent<Props> = ({ tweetId }) => {
     const { NEXT_PUBLIC_PLATO_API_URL } = process.env;
     const [ reports, setReports ] = useState<TweetReport[]>([]);
     const [ session, loading ] = useSession();
-    const router = useRouter();
 
     useEffect(
         () => {
             if (session) {
                 axios.get(
-                    `${NEXT_PUBLIC_PLATO_API_URL}/twitter/report/${tweetId}/`,
+                    `${NEXT_PUBLIC_PLATO_API_URL}/twitter/tweet/${tweetId}/report/`,
                     {headers: {"Authorization" : `Bearer ${session!.access_token}`}}
                 ).then(
                     (response) => {
@@ -44,7 +42,7 @@ export const TweetReport: React.FunctionComponent<Props> = ({ tweetId }) => {
                 )
             }
         },
-        [session]
+        [session, tweetId]
     )
 
     const chartData: Series[] = [{
@@ -81,7 +79,7 @@ export const TweetReport: React.FunctionComponent<Props> = ({ tweetId }) => {
         (report: TweetReport) => {
             chartData[2].data.push({
                 reportDate: new Date(report.reportDate),
-                retweetCount: report.impressionCount/100
+                retweetCount: Math.ceil(report.impressionCount/100)
             })
         }
     )
@@ -100,7 +98,7 @@ export const TweetReport: React.FunctionComponent<Props> = ({ tweetId }) => {
     )
 
     chartData.push({
-        label: "Reply Count",
+        label: "Replies",
         data: []
     });
     reports.forEach(
@@ -108,6 +106,19 @@ export const TweetReport: React.FunctionComponent<Props> = ({ tweetId }) => {
             chartData[4].data.push({
                 reportDate: new Date(report.reportDate),
                 retweetCount: report.replyCount
+            })
+        }
+    )
+
+    chartData.push({
+        label: "Quotes",
+        data: []
+    });
+    reports.forEach(
+        (report: TweetReport) => {
+            chartData[5].data.push({
+                reportDate: new Date(report.reportDate),
+                retweetCount: report.quoteCount
             })
         }
     )

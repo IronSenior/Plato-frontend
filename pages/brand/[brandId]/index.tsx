@@ -18,10 +18,12 @@ import {
     Container,
     Box,
     Heading,
+    SimpleGrid,
 } from '@chakra-ui/react';
 
 import { TweetsList } from "../../../components/Twitter/TweetsList";
 import { TweetReport } from "../../../components/Twitter/TweetReport";
+import { AccountReport } from "../../../components/Twitter/AccountReport";
 
 
 export default function Accounts() {
@@ -37,7 +39,7 @@ export default function Accounts() {
         () => {
             if (session) {
                 axios.get(
-                    `${NEXT_PUBLIC_PLATO_API_URL}/twitter/brand/${brandId}/`,
+                    `${NEXT_PUBLIC_PLATO_API_URL}/twitter/brand/${brandId}/account/`,
                     {headers: {"Authorization" : `Bearer ${session!.access_token}`}}
                 ).then(
                     (response) => {
@@ -90,14 +92,19 @@ export default function Accounts() {
             <TabPanels>
                 <TabPanel>
                     {twitterAccount ? (
-                        <Box ml="10" mt="5">
-                            <Link href={`/brand/${brandId}/schedule/?accountId=${twitterAccount.accountId}`}>
-                                <Button mb="4">
-                                    Programar Tweet
-                                </Button>
-                            </Link>
-                            <TweetsList accountId={twitterAccount.accountId}></TweetsList>
-                        </Box>
+                        <SimpleGrid columns={{ "md": 2, "xs": 1 }} spacing={10}>
+                            <Box>
+                                <Link href={`/brand/${brandId}/schedule/?accountId=${twitterAccount.accountId}`}>
+                                    <Button mb="4">
+                                        Programar Tweet
+                                    </Button>
+                                </Link>
+                                <TweetsList accountId={twitterAccount.accountId}></TweetsList>
+                            </Box>
+                            <Box height={500}>
+                                <AccountReport accountId={twitterAccount.accountId}></AccountReport>
+                            </Box>
+                        </SimpleGrid>
                     ) : (
                         <AddTwitterButton/>
                     )}
