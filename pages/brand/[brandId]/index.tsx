@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Link from 'next/link';
-import { useSession } from "next-auth/client";
+import { signOut, useSession } from "next-auth/client";
 import { useRouter } from "next/dist/client/router";
 import { AddTwitterButton } from "../../../components/Twitter/AddTwitterButton";
 import { 
@@ -37,7 +37,7 @@ export default function Accounts() {
 
     useEffect(
         () => {
-            if (session) {
+            if (session && brandId) {
                 axios.get(
                     `${NEXT_PUBLIC_PLATO_API_URL}/twitter/brand/${brandId}/account/`,
                     {headers: {"Authorization" : `Bearer ${session!.access_token}`}}
@@ -47,6 +47,15 @@ export default function Accounts() {
                     }
                 ).catch(
                     (error) => {
+                        if (error.response){
+                            if(error.response.status >= 400){
+                                router.push("/login");
+                                signOut();
+                            }
+                            console.log(error.response.data);
+                            console.log(error.response.status);
+                            console.log(error.response.headers);
+                        }
                         setTwitterAccount(null);
                     }
                 )
@@ -92,7 +101,7 @@ export default function Accounts() {
             <TabPanels>
                 <TabPanel>
                     {twitterAccount ? (
-                        <SimpleGrid columns={{ "md": 2, "xs": 1 }} spacing={10}>
+                        <SimpleGrid columns={{ "xl": 2, "md": 1 }} spacing={10}>
                             <Box>
                                 <Link href={`/brand/${brandId}/schedule/?accountId=${twitterAccount.accountId}`}>
                                     <Button mb="4">

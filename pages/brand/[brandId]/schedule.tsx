@@ -22,24 +22,43 @@ export default function Schedule() {
 
     const onSchedule = useCallback(
         async (publicationData: ScheduleFormData) => {
-            const options = {
-                headers: {"Authorization" : `Bearer ${session!.access_token}`},
+            let options = {
+                headers: {
+                    "Authorization" : `Bearer ${session!.access_token}`,
+                    "content-type" : "application/json"
+                },
             }
             // This is a temporal solution to convert string date to timestamp
             const publicationDateTime = parseDate(
                 publicationData.publicationDate,
                 publicationData.publicationTime
-            )
+            );
+            const tweetId = uuid.v4();
             const body = {
                 tweet: {
-                    tweetId: uuid.v4(),
+                    tweetId: tweetId,
                     accountId: router.query.accountId,
                     publicationDate: publicationDateTime,
                     description: publicationData.description
                 }
             };
-            console.log(body);
-            axios.post(`${NEXT_PUBLIC_PLATO_API_URL}/twitter/tweet/schedule/`, body, options);
+
+            axios.post(`${NEXT_PUBLIC_PLATO_API_URL}/twitter/tweet/schedule/`, body, options)
+            .then(
+                (response) => {
+                    options.headers["content-type"] = "multipart/form-data";
+                    Array.from(publicationData.media).forEach(
+                        (media) => {
+                            const formData = new FormData();
+                            formData.append('file', media)
+                            axios.post(`${NEXT_PUBLIC_PLATO_API_URL}/twitter/tweet/${tweetId}/media/`,
+                            formData,
+                            options)
+                        }
+                    )
+                }
+            )
+
             router.push(`/brand/${brandId}`);
         },
         []

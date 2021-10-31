@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
-import { useSession } from "next-auth/client";
+import { signOut, useSession } from "next-auth/client";
 import { useForm } from "react-hook-form";
 import UserDTO from "../../models/userDTO";
 import axios from "axios";
@@ -26,6 +26,18 @@ export const AddTwitterButton: React.FunctionComponent = () => {
                 ).then(
                     (response) => {
                         setAuthUrl(response.data.authUrl);
+                    }
+                ).catch(
+                    (error) => {
+                        if (error.response){
+                            if(error.response.status >= 400){
+                                router.push("/login");
+                                signOut();
+                            }
+                            console.log(error.response.data);
+                            console.log(error.response.status);
+                            console.log(error.response.headers);
+                        }
                     }
                 )
             }

@@ -1,35 +1,34 @@
 import { Spinner } from "@chakra-ui/react";
 import axios from "axios";
-import { useSession } from "next-auth/client";
+import { signOut, useSession } from "next-auth/client";
+import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useState } from "react";
 import { AxisOptions, Chart } from "react-charts";
+import { ReportPoint, getEmptyReport, Series, getTimeAxes, getValueAxes } from "../../utils/report";
 
-
-type TweetReport = {
-    reportDate: Date,
-    retweetCount: number,
-}
-
-type Series = {
-    label: string,
-    data: TweetReport[]
-}
 
 type Props = {
     tweetId: string;
 };
 
+function getLastWeek() {
+    var today = new Date();
+    var lastWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
+    return lastWeek;
+}
 
 export const TweetReport: React.FunctionComponent<Props> = ({ tweetId }) => {
     const { NEXT_PUBLIC_PLATO_API_URL } = process.env;
-    const [ reports, setReports ] = useState<TweetReport[]>([]);
+    const [ reports, setReports ] = useState<ReportPoint[]>([]);
     const [ session, loading ] = useSession();
+    const router = useRouter();
 
     useEffect(
         () => {
             if (session) {
+                const lastWeek = getLastWeek().getTime() / 1000
                 axios.get(
-                    `${NEXT_PUBLIC_PLATO_API_URL}/twitter/tweet/${tweetId}/report/`,
+                    `${NEXT_PUBLIC_PLATO_API_URL}/twitter/tweet/${tweetId}/report/?sinceDate=${lastWeek}`,
                     {headers: {"Authorization" : `Bearer ${session!.access_token}`}}
                 ).then(
                     (response) => {
@@ -37,6 +36,15 @@ export const TweetReport: React.FunctionComponent<Props> = ({ tweetId }) => {
                     }
                 ).catch(
                     (error) => {
+                        if (error.response){
+                            if(error.response.status >= 400){
+                                router.push("/login");
+                                signOut();
+                            }
+                            console.log(error.response.data);
+                            console.log(error.response.status);
+                            console.log(error.response.headers);
+                        }
                         setReports([]);
                     }
                 )
@@ -45,102 +53,51 @@ export const TweetReport: React.FunctionComponent<Props> = ({ tweetId }) => {
         [session, tweetId]
     )
 
-    const chartData: Series[] = [{
-        label: "Retweets",
-        data: []
-    }]
-    reports.forEach(
-        (report: TweetReport) => {
-            chartData[0].data.push({
-                reportDate: new Date(report.reportDate),
-                retweetCount: report.retweetCount
-            })
-        }
-    )
-
-    chartData.push({
-        label: "Likes",
-        data: []
-    });
-    reports.forEach(
-        (report: TweetReport) => {
-            chartData[1].data.push({
-                reportDate: new Date(report.reportDate),
-                retweetCount: report.favCount
-            })
-        }
-    )
-
-    chartData.push({
-        label: "Impressions",
-        data: []
-    });
-    reports.forEach(
-        (report: TweetReport) => {
-            chartData[2].data.push({
-                reportDate: new Date(report.reportDate),
-                retweetCount: Math.ceil(report.impressionCount/100)
-            })
-        }
-    )
-
-    chartData.push({
-        label: "Profile Clicks",
-        data: []
-    });
-    reports.forEach(
-        (report: TweetReport) => {
-            chartData[3].data.push({
-                reportDate: new Date(report.reportDate),
-                retweetCount: report.profileClickCount
-            })
-        }
-    )
-
-    chartData.push({
-        label: "Replies",
-        data: []
-    });
-    reports.forEach(
-        (report: TweetReport) => {
-            chartData[4].data.push({
-                reportDate: new Date(report.reportDate),
-                retweetCount: report.replyCount
-            })
-        }
-    )
-
-    chartData.push({
-        label: "Quotes",
-        data: []
-    });
-    reports.forEach(
-        (report: TweetReport) => {
-            chartData[5].data.push({
-                reportDate: new Date(report.reportDate),
-                retweetCount: report.quoteCount
-            })
-        }
-    )
-
-    const primaryAxis = useMemo(
-        (): AxisOptions<TweetReport> => ({
-          getValue: datum => datum.reportDate,
-          scaleType: "time"
-        }),
-        []
-    )
-    
-    const secondaryAxes = useMemo(
-        (): AxisOptions<TweetReport>[] => [{
-            getValue: datum => datum.retweetCount,
-        }],
-        []
-    )
+    const primaryAxis = getTimeAxes();
+    const secondaryAxes = getValueAxes();
 
     if (!session || !reports.length) {
         return (<Spinner />);
     }
+
+    const chartData: Series[] = getEmptyReport([
+        "Retweets", "Likes", "Impresiones",
+        "Clicks en perfil", "Respuestas", "Citas"
+    ])
+    const [
+        retweets, likes, impressions,
+        profileClicks, replies, quotes
+    ] = chartData;
+
+    reports.forEach(
+        (report: ReportPoint) => {
+            retweets.data.push({
+                reportDate: new Date(report.reportDate),
+                value: report.retweetCount
+            })
+            likes.data.push({
+                reportDate: new Date(report.reportDate),
+                value: report.favCount
+            })
+            impressions.data.push({
+                reportDate: new Date(report.reportDate),
+                value: Math.ceil(report.impressionCount/100)
+            })
+            profileClicks.data.push({
+                reportDate: new Date(report.reportDate),
+                value: report.profileClickCount
+            })
+            replies.data.push({
+                reportDate: new Date(report.reportDate),
+                value: report.replyCount
+            })
+            quotes.data.push({
+                reportDate: new Date(report.reportDate),
+                value: report.quoteCount
+            })
+        }
+    )
+
 
     return (
         <Chart

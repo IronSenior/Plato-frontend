@@ -1,35 +1,34 @@
 import { Spinner } from "@chakra-ui/react";
 import axios from "axios";
-import { useSession } from "next-auth/client";
+import { signOut, useSession } from "next-auth/client";
+import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useState } from "react";
 import { AxisOptions, Chart } from "react-charts";
+import { getEmptyReport, getTimeAxes, getValueAxes, ReportPoint, Series } from "../../utils/report";
 
-
-type AccountReport = {
-    reportDate: Date,
-    valueCount: number,
-}
-
-type Series = {
-    label: string,
-    data: AccountReport[]
-}
 
 type Props = {
     accountId: string;
 };
 
+function getLastWeek() {
+    var today = new Date();
+    var lastWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
+    return lastWeek;
+}
 
 export const AccountReport: React.FunctionComponent<Props> = ({ accountId }) => {
     const { NEXT_PUBLIC_PLATO_API_URL } = process.env;
-    const [ reports, setReports ] = useState<AccountReport[]>([]);
+    const [ reports, setReports ] = useState<ReportPoint[]>([]);
     const [ session, loading ] = useSession();
+    const router = useRouter();
 
     useEffect(
         () => {
             if (session) {
+                const lastWeek = getLastWeek().getTime() / 1000;
                 axios.get(
-                    `${NEXT_PUBLIC_PLATO_API_URL}/twitter/account/${accountId}/report/`,
+                    `${NEXT_PUBLIC_PLATO_API_URL}/twitter/account/${accountId}/report/?sinceDate=${lastWeek}`,
                     {headers: {"Authorization" : `Bearer ${session!.access_token}`}}
                 ).then(
                     (response) => {
@@ -37,6 +36,15 @@ export const AccountReport: React.FunctionComponent<Props> = ({ accountId }) => 
                     }
                 ).catch(
                     (error) => {
+                        if (error.response){
+                            if(error.response.status >= 400){
+                                router.push("/login");
+                                signOut();
+                            }
+                            console.log(error.response.data);
+                            console.log(error.response.status);
+                            console.log(error.response.headers);
+                        }
                         setReports([]);
                     }
                 )
@@ -44,51 +52,28 @@ export const AccountReport: React.FunctionComponent<Props> = ({ accountId }) => 
         },
         [session, accountId]
     )
-    
-    const chartData: Series[] = [{
-        label: "Seguidores",
-        data: []
-    }]
-    reports.forEach(
-        (report: AccountReport) => {
-            chartData[0].data.push({
-                reportDate: new Date(report.reportDate),
-                valueCount: report.followersCount
-            })
-        }
-    )
 
-    chartData.push({
-        label: "Siguiendo",
-        data: []
-    });
-    reports.forEach(
-        (report: AccountReport) => {
-            chartData[1].data.push({
-                reportDate: new Date(report.reportDate),
-                valueCount: report.friendsCount
-            })
-        }
-    )
-
-    const primaryAxis = useMemo(
-        (): AxisOptions<AccountReport> => ({
-          getValue: datum => datum.reportDate,
-          scaleType: "time"
-        }),
-        []
-    )
-    
-    const secondaryAxes = useMemo(
-        (): AxisOptions<AccountReport>[] => [{
-            getValue: datum => datum.valueCount,
-        }],
-        []
-    )
+    const primaryAxis = getTimeAxes();
+    const secondaryAxes = getValueAxes();
 
     if (!session || !reports.length) {
         return (<Spinner />);
     }
+    
+    const chartData: Series[] = getEmptyReport(["Seguidores", "Siguiendo"])
+    const [followers, friends] = chartData;
+    reports.forEach(
+        (report: ReportPoint) => {
+            followers.data.push({
+                reportDate: new Date(report.reportDate),
+                value: report.followersCount
+            });
+            friends.data.push({
+                reportDate: new Date(report.reportDate),
+                value: report.friendsCount
+            })
+        }
+    )
 
     return (
         <Chart

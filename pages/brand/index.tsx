@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useSession } from "next-auth/client";
+import { signOut, useSession } from "next-auth/client";
 import { useRouter } from "next/dist/client/router";
 import Link from 'next/link';
 import { 
@@ -30,6 +30,18 @@ export default function Brands() {
                 ).then(
                     (response) => {
                         setBrands(response.data);
+                    }
+                ).catch(
+                    (error) => {
+                        if (error.response){
+                            if(error.response.status >= 400){
+                                router.push("/login");
+                                signOut();
+                            }
+                            console.log(error.response.data);
+                            console.log(error.response.status);
+                            console.log(error.response.headers);
+                        }
                     }
                 )
             }

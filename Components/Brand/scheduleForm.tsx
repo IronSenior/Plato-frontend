@@ -17,7 +17,8 @@ import {
 export type ScheduleFormData = {
     description: string,
     publicationDate: string,
-    publicationTime: string
+    publicationTime: string,
+    media: Array<string>
 }
 
 type Props = {
@@ -34,12 +35,13 @@ export const ScheduleForm: React.FunctionComponent<Props> = ({ onSubmitForm }) =
     }
     const handleDateChange = (event) => setValue("publicationDate", event.target.value)
     const handleTimeChange = (event) => setValue("publicationTime", event.target.value)
-    
+    const handleMediaChange = (event) => setValue("media", event.target.files)
 
     useEffect(() => {
         register("description", { required: true });
         register("publicationDate", { required: true });
         register("publicationTime", { required: true });
+        register("media", { required: true });
     }, []);
 
     return (
@@ -71,6 +73,13 @@ export const ScheduleForm: React.FunctionComponent<Props> = ({ onSubmitForm }) =
                   onChange={handleDescriptionChange}
                 />
                 <Text float="right" fontSize="10">{description.length}/280</Text>
+                <Input
+                  mt="5"
+                  type="file"
+                  placeholder="Media"
+                  required={false}
+                  onChange={handleMediaChange}
+                />
                 <Input
                   mt="5"
                   type="date"
