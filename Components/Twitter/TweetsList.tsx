@@ -63,7 +63,7 @@ export const TweetsList: React.FunctionComponent<Props> = ({ accountId }) => {
     return (
         <List spacing={3}>
             {tweets.map((tweet, index) => (  
-                <TweetItem tweet={ tweet }/>
+                <TweetItem key={tweet.id} tweet={ tweet }/>
             ))}
         </List>
     );

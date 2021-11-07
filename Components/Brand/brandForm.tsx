@@ -25,8 +25,8 @@ type Props = {
 export const BrandForm: React.FunctionComponent<Props> = ({ onSubmitForm }) => {
   const { handleSubmit, register, setValue } = useForm<BrandFormData>();
 
-  const handleNameChange = (event) => setValue("name", event.target.value)
-  const handleImageChange = (event) => setValue("image", event.target.value)
+  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => setValue("name", event.target.value)
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => setValue("image", event.target.value)
 
   useEffect(() => {
     register("name", { required: true });

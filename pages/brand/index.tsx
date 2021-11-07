@@ -70,7 +70,7 @@ export default function Brands() {
                     </Box>
                     <Center pt="5">
                         {brands.map((brand, index) => (  
-                            <Link href={`/brand/${brand.brandId}`}>
+                            <Link key={brand.id} href={`/brand/${brand.brandId}`}>
                                 <Avatar name={brand.name} src={brand.image} mr={2}/>
                             </Link>
                         ))}

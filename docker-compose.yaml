@@ -1,0 +1,9 @@
+version: "3.3"
+services:
+  plato:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_PLATO_API_URL: http://localhost:8080
+      NODE_JWT_SECRET:

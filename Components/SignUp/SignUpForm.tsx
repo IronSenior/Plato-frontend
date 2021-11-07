@@ -28,9 +28,9 @@ type Props = {
 export const SignUpForm: React.FunctionComponent<Props> = ({ onSubmitForm, user }) => {
   const { handleSubmit, register, setValue } = useForm<UserFormData>();
 
-  const handleEmailChange = (event) => setValue("usermail", event.target.value)
-  const handlePasswordChange = (event) => setValue("password", event.target.value)
-  const handleUsernameChange = (event) => setValue("username", event.target.value)
+  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => setValue("usermail", event.target.value)
+  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => setValue("password", event.target.value)
+  const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => setValue("username", event.target.value)
   const [show, setShow] = React.useState(false)
   const handleClick = () => setShow(!show)
 
@@ -73,10 +73,6 @@ export const SignUpForm: React.FunctionComponent<Props> = ({ onSubmitForm, user 
                 onChange={handleUsernameChange}
               />
               <InputGroup mt="5">
-                <InputLeftElement
-                  pointerEvents="none"
-                  children="@"
-                />
                 <Input
                   type="email"
                   placeholder="Email"

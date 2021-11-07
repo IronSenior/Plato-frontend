@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ChangeEventHandler, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { 
     Image,
@@ -18,7 +18,7 @@ export type ScheduleFormData = {
     description: string,
     publicationDate: string,
     publicationTime: string,
-    media: Array<string>
+    media: FileList
 }
 
 type Props = {
@@ -29,13 +29,13 @@ export const ScheduleForm: React.FunctionComponent<Props> = ({ onSubmitForm }) =
     const { handleSubmit, register, setValue, getValues } = useForm<ScheduleFormData>();
 
     const [description, setDescription] = useState("")
-    const handleDescriptionChange = (event) => {
-      setValue("description", event.target.value);
-      setDescription(event.target.value);
+    const handleDescriptionChange = (event: React.ChangeEvent<HTMLTextAreaElement>): any => {
+        setValue("description", event.target.value);
+        setDescription(event.target.value);
     }
-    const handleDateChange = (event) => setValue("publicationDate", event.target.value)
-    const handleTimeChange = (event) => setValue("publicationTime", event.target.value)
-    const handleMediaChange = (event) => setValue("media", event.target.files)
+    const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => setValue("publicationDate", event.target.value)
+    const handleTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => setValue("publicationTime", event.target.value)
+    const handleMediaChange = (event: React.ChangeEvent<HTMLInputElement>) => setValue("media", event.target.files!)
 
     useEffect(() => {
         register("description", { required: true });

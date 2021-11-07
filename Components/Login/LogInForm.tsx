@@ -26,8 +26,8 @@ type Props = {
 export const LogInForm: React.FunctionComponent<Props> = ({ onSubmitForm, user }) => {
   const { handleSubmit, register, setValue } = useForm<LogInFormData>();
 
-  const handleEmailChange = (event) => setValue("usermail", event.target.value)
-  const handlePasswordChange = (event) => setValue("password", event.target.value)
+  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => setValue("usermail", event.target.value)
+  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => setValue("password", event.target.value)
   const [show, setShow] = React.useState(false)
   const handleClick = () => setShow(!show)
 
@@ -62,10 +62,6 @@ export const LogInForm: React.FunctionComponent<Props> = ({ onSubmitForm, user }
           <Center mt="5">
             <form onSubmit={handleSubmit((contactData) => onSubmitForm(contactData))}>
               <InputGroup>
-                <InputLeftElement
-                  pointerEvents="none"
-                  children="@"
-                />
                 <Input
                   type="email"
                   placeholder="Email"
